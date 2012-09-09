@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 heroku-static-site
 ===========
 
@@ -35,3 +36,9 @@ License
 &copy; copyfree 2012 [Jamie Dubs](http://jamiedubs.com).
 This source code made freely available under an [MIT License](http://www.opensource.org/licenses/mit-license.php).
 
+=======
+eve-mugshots
+============
+
+Eve Mugshots
+>>>>>>> 768dd7514a4ca207f963f8746bc43174c3d3acba
