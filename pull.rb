@@ -1,3 +1,21 @@
+#!/Users/bwilson/.rvm/rubies/ruby-1.9.2-p290/bin/ruby
+
+base_url = "http://image.eveonline.com/Character/CHARID_SIZE.jpg"
+
+size = "128"
+# id = 90896000
+
+mine = [90895484]
+
+id = 90895000
+
+pages      = 10
+num_images = 100
+per_row    = 6
+
+def write_page(url, characters, sidebar)
+
+page = <<-eos
 <head>
     <meta charset="utf-8">
     <title>Bootstrap, from Twitter</title>
@@ -54,24 +72,41 @@
     <div class="container">
       <div class='row'>
         <div class='span9'>
-      <ul class=' nav nav-tabs nav-stacked'>
-        <li><a href='page_0.html'>90895000 - 90895100</a></li>
-        <li><a href='page_1.html'>90895100 - 90895200</a></li>
-        <li><a href='page_2.html'>90895200 - 90895300</a></li>
-        <li><a href='page_3.html'>90895300 - 90895400</a></li>
-        <li><a href='page_4.html'>90895400 - 90895500</a></li>
-        <li><a href='page_5.html'>90895500 - 90895600</a></li>
-        <li><a href='page_6.html'>90895600 - 90895700</a></li>
-        <li><a href='page_7.html'>90895700 - 90895800</a></li>
-        <li><a href='page_8.html'>90895800 - 90895900</a></li>
-        <li><a href='page_9.html'>90895900 - 90896000</a></li>
-      </ul>
+      #{characters}
         </div>
         <div class='span3'>
-        
+        #{sidebar}
         </div>
       </div>
   <h1 id='about'>About Eve Mugshots</h1>
   <p>Eve Mugshots is just my way of looking at a bunch of character images of other Eve Characters around that of my avatars.
   </body>
 </html>
+eos
+
+  File.open(url,'w') {|f| f.write(page)}
+end
+
+links = "<ul class=' nav nav-tabs nav-stacked'>"
+start = 0
+pages.times do |j|
+  page = "page_#{j.to_s}.html"
+  links << "\n        <li><a href='#{page}'>#{(id + start).to_s} - #{(id + start + num_images).to_s}</a></li>"
+  start += num_images
+end
+
+sidebar = links + "\n      </ul>"
+
+write_page('index.html', sidebar, '')  
+
+pages.times do |j|
+  characters = "<h1>Characters #{id} - #{id + num_images}</h1><table>"
+  num_images.times do |i|
+    id += 1
+    characters << "\n      </tr>\n      <tr>" if i % per_row == 0 and i != 0
+    char_id = (mine.include?(id)) ? "<b>#{i + 1}) #{id}</>" : "#{i + 1}) #{id}"
+    characters << "\n        <td><a href='#{base_url.gsub('CHARID', (id).to_s).gsub('SIZE','1024')}'><img src='#{base_url.gsub('CHARID', (id).to_s).gsub('SIZE',size)}' /></a><p>#{char_id}</p></td>"
+  end
+  page = "page_#{j.to_s}.html"
+  write_page(page, "#{characters}</table>", sidebar)
+end
